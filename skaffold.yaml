@@ -1,0 +1,29 @@
+apiVersion: skaffold/v2beta15
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infrastructure/k8s/*
+      - ./infrastructure/k8s-nginx-dev/*
+build:
+  local:
+    push: false
+    useBuildkit: true
+  artifacts:
+    - image: comp0022/auth
+      context: auth
+      docker:
+        ssh: github=env/id_ed25519
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: comp0022/dashboard-client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
