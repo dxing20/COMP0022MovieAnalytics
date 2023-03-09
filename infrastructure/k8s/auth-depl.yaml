@@ -18,6 +18,8 @@ spec:
           env:
             - name: POSTGRES_URI
               value: 'database-1.cttntm0qlnea.eu-west-2.rds.amazonaws.com'
+            - name: KUBERNETES
+              value: 'true'
             - name: POSTGRES_USERNAME
               value: 'postgres'
             - name: POSTGRES_PASSWORD

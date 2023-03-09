@@ -5,6 +5,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/limit-connections:  "10" # rate limit 10 connection per ip
     nginx.ingress.kubernetes.io/limit-rpm: "100" # rate limit requests per minute per ip
 spec:

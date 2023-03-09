@@ -1,4 +1,4 @@
-// File: C:\Users\DannyXing\OneDrive\UCLCourseFiles\Database\COMP0022MovieAnalytics\client\app\page.tsx
+// File: C:\Users\dxing\OneDrive\UCLCourseFiles\Database\COMP0022MovieAnalytics\client\app\page.tsx
 import * as entry from '../../../app/page'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface'
 

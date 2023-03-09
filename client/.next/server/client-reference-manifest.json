@@ -107,11 +107,11 @@
   },
   "__edge_ssr_module_mapping__": {},
   "__entry_css_files__": {
-    "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\app\\layout": [
+    "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\app\\layout": [
       "static/css/_app-client_app_globals_css.css"
     ]
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\app-router.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\app-router.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/app-router.js",
       "name": "",
@@ -137,7 +137,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\app-router.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\app-router.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/app-router.js",
       "name": "",
@@ -163,7 +163,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\error-boundary.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\error-boundary.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/error-boundary.js",
       "name": "",
@@ -189,7 +189,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\error-boundary.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\error-boundary.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/error-boundary.js",
       "name": "",
@@ -215,7 +215,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\layout-router.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\layout-router.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/layout-router.js",
       "name": "",
@@ -241,7 +241,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\layout-router.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\layout-router.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/layout-router.js",
       "name": "",
@@ -267,7 +267,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\render-from-template-context.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\client\\components\\render-from-template-context.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/render-from-template-context.js",
       "name": "",
@@ -293,7 +293,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\render-from-template-context.js": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\node_modules\\next\\dist\\esm\\client\\components\\render-from-template-context.js": {
     "": {
       "id": "(app-client)/./node_modules/next/dist/client/components/render-from-template-context.js",
       "name": "",
@@ -319,7 +319,7 @@
       "async": false
     }
   },
-  "C:\\Users\\DannyXing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\app\\globals.css": {
+  "C:\\Users\\dxing\\OneDrive\\UCLCourseFiles\\Database\\COMP0022MovieAnalytics\\client\\app\\globals.css": {
     "default": {
       "id": "null",
       "name": "default",

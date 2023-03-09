@@ -20,11 +20,8 @@ const start = async () => {
 
   // Connect to postgres database
   try {
-    pool.query(
-      "CREATE TABLE IF NOT EXISTS users (userId text UNIQUE NOT NULL, password text NOT NULL, PRIMARY KEY (userId));",
-      (err, res) => {
-        console.log(err, res);
-      }
+    await pool.query(
+      "CREATE TABLE IF NOT EXISTS users (userId text UNIQUE NOT NULL, password text NOT NULL, PRIMARY KEY (userId));"
     );
   } catch (err) {
     console.error(err);
