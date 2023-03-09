@@ -10,10 +10,10 @@ if you ran `skaffold dev` for development but cannot find the website at comp002
 
 In chrome, if you see this page when accessing the development client, type `thisisunsafe` and press enter.
 
-## Before running skaffold
+### Make sure you have env folder setup
 
-add a deployment key from github
+Check if you have a env folder in your project root, it is required and contains:
 
-run `kubectl create secret generic jwt-secret --from-literal=JWT_KEY='politicaly_correct'`
-
-and `kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD='KrpA5!f5rxmL]2ts3iTbPh#J[uJ+'`
+- a deployment ssh key pair from github
+- `kubectl create secret generic jwt-secret --from-literal=JWT_KEY='politicaly_correct'`
+- `kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD='KrpA5!f5rxmL]2ts3iTbPh#J[uJ+'`

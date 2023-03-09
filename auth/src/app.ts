@@ -5,6 +5,10 @@ import "express-async-errors";
 import { errorHandler, PageNotFoundError } from "@comp0022/common";
 
 import { Request, Response, Express } from "express";
+import { statusRouter } from "./routes/status";
+import { signupRouter } from "./routes/signup";
+import { signinRouter } from "./routes/signin";
+import { signoutRouter } from "./routes/signout";
 
 const app: Express = express();
 
@@ -19,6 +23,11 @@ app.use(
     secure: false, //  a boolean indicating whether the cookie is only to be sent over HTTPS (false by default for HTTP, true by default for HTTPS)
   })
 );
+
+app.use(statusRouter);
+app.use(signupRouter);
+app.use(signinRouter);
+app.use(signoutRouter);
 
 app.all("*", async (req: Request, res: Response) => {
   throw new PageNotFoundError(req.originalUrl);
