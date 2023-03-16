@@ -1,44 +1,77 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+import axios from "axios";
+import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { ReadonlyRequestCookies } from "next/dist/server/app-render";
 
-function getDomain(domain: string){
-  if(process.env.KUBERNETES){
-    return domain;
+axios.defaults.withCredentials = true;
+
+async function get(req: string) {
+  let res;
+
+  try {
+    res = await axios.get(req);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return {};
   }
-  return "https://comp0022.dev";
 }
 
-async function get(domain: string, req: string) {
-  try{
-    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = '0'; 
-    const res = await fetch(getDomain(domain) + req, {next: {revalidate: 60}});
-    if (!res.ok) {
-      throw new Error("Failed to reach server");
-    }
-  
-    return res.json();
+async function post({
+  url,
+  body,
+  useClientCookies,
+}: {
+  url: string;
+  body: any;
+  useClientCookies?: RequestCookies | ReadonlyRequestCookies;
+}) {
+  let res;
+  console.log(
+    url,
+    useClientCookies?.getAll().map((c) => `${c.name}=${c.value}`)
+  );
 
-  }catch(err){
-    console.log(err);
-  }
-  return {};
-}
-
-async function post(domain: string,req: string) {
-  try{
-    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = '0'; 
-    const res = await fetch(getDomain(domain) + req,
+  try {
+    res = await axios.post(
+      url,
       {
-        method: 'POST'
-      });
-    if (!res.ok) {
-      throw new Error("Failed to reach server");
-    }
-  
-    return res.json();
+        ...body,
+      },
+      {
+        headers: {
+          cookie: useClientCookies?.getAll().map((c) => `${c.name}=${c.value}`),
+        },
+      }
+    );
+    console.log(
+      ">>",
+      res.config.url,
+      res.status,
+      res.config.headers.cookie,
+      res.data
+    );
 
-  }catch(err){
-    console.log(err);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return {};
   }
-  return {};
 }
 
-export { get, post };
+function constructUrl(service: string, path: string): string {
+  if (Object.hasOwn(services, service)) {
+    if (process.env.IN_KUBERNETES == "true") {
+      return `${services[service]}${path}`;
+    }
+    return `https://comp0022.dev${path}`;
+  } else {
+    throw new Error("Service not found");
+  }
+}
+
+const services: { [key: string]: string } = {
+  auth: "http://auth-srv:3000",
+};
+
+export { get, post, constructUrl };

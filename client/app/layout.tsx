@@ -1,13 +1,24 @@
 // These styles apply to every route in the application
-import { AppContext } from 'next/app';
-import './globals.css';
-import SideNav from './side-nav';
-import {get, post} from '../api/api'
+import "./globals.css";
+import SideNav from "./side-nav";
+import { post, constructUrl } from "../api/api";
+import { cookies } from "next/headers";
 
-async function RootLayout({ children }:{children: React.ReactNode}) {
-  const res = await post("auth-srv.default", "/api/users/status");
-  const {loggedIn, username } = res;
-  console.log(res);
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // data fetching
+  const userStatusPromise = post({
+    url: constructUrl("auth", "/api/users/status"),
+    body: {},
+    useClientCookies: cookies(),
+  });
+
+  const [userStatus] = await Promise.all([userStatusPromise]);
+  console.log(userStatus);
+
   return (
     <html lang="en">
       <head>
@@ -16,17 +27,11 @@ async function RootLayout({ children }:{children: React.ReactNode}) {
       </head>
       <body>
         <div className="w-screen h-screen overflow-hidden">
-          <SideNav />
-          <div className="bg-blue-100">
-          ({loggedIn})
-          ({username})
-          </div>
-          
+          <SideNav {...userStatus} />
+
           {children}
         </div>
-        
       </body>
-    </html>)
+    </html>
+  );
 }
-
-export default RootLayout;

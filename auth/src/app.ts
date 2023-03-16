@@ -20,7 +20,8 @@ app.use(
   cookieSession({
     maxAge: 1000 * 60 * 60 * 24 * 2, // 2 days
     signed: false, // our cookie is not signed but our tokens will be
-    secure: false, //  a boolean indicating whether the cookie is only to be sent over HTTPS (false by default for HTTP, true by default for HTTPS)
+    secure: true, //  a boolean indicating whether the cookie is only to be sent over HTTPS (false by default for HTTP, true by default for HTTPS)
+    sameSite: "none",
   })
 );
 

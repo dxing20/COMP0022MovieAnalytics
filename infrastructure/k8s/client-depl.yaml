@@ -15,6 +15,9 @@ spec:
       containers:
         - name: client
           image: comp0022/dashboard-client
+          env:
+            - name: IN_KUBERNETES
+              value: 'true'
 ---
 apiVersion: v1
 kind: Service
