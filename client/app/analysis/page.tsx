@@ -83,7 +83,7 @@ const yColSelection: DropdownData = {
 };
 
 function Dropdown0022(props){
-  const [selected, setSelected] = useState(new Set(["{props.default}"]));
+  const [selected, setSelected] = useState(new Set().add(props.dropdownData.default));
 
   const selectedValue = useMemo(
     () => Array.from(selected).join(", ").replaceAll("_", " "),
@@ -141,32 +141,6 @@ function Table0022(props){
   );
 }
 
-  return (
-    <Dropdown>
-      <Dropdown.Button color="primary" css={{ tt: "capitalize" }}>
-        {selectedValue}
-      </Dropdown.Button>
-      <Dropdown.Menu
-        aria-label="Dynamic Single selection actions"
-        color="primary"
-        // disallowEmptySelection
-        selectionMode="single"
-        selectedKeys={selected}
-        onSelectionChange={setSelected}
-        items={props.dropdownData.items}
-      >
-        {(item) => (
-          <Dropdown.Item
-            key={item.key}
-          >
-            {item.name}
-          </Dropdown.Item>
-        )}
-      </Dropdown.Menu>
-    </Dropdown>
-  );
-}
-
 function RenderDiagram(){
     return(
       // Display a page shows the title "Diagram" and a diagram
@@ -180,7 +154,7 @@ function RenderDiagram(){
               <h1 className="text-3xl">Y-axis</h1>
               <Dropdown0022 dropdownData={yTableSelection} className=""/>
               <Dropdown0022 dropdownData={yColSelection} className=""/>
-              <BSButton/>
+
             </div>
           </div>
           <h1 className="text-2xl">Diagram</h1>
