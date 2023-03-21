@@ -8,18 +8,23 @@ import { Chart as ChartJS, registerables } from 'chart.js';
 ChartJS.register(...registerables);
 import { Line, Scatter, Chart } from "react-chartjs-2";
 import { Dropdown, Table } from "@nextui-org/react";
+import { truncate } from "fs";
 
 function GetAllTables() {
   const [data, setData] = useState([]);
   
 }
 
-type TableData = {
+type DiagramData = {
   XLabel: string[];
   YLabel: string[];
 
   data: any[];
 };
+
+const diagramOptions ={
+  responsive: true,
+}
 
 const result = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -141,11 +146,52 @@ function Table0022(props){
   );
 }
 
+const columns = [
+  {
+    key: "statistic",
+    label: "STATISTIC",
+  },
+  {
+    key: "column_1",
+    label: "COLUMN 1",
+  },
+  {
+    key: "column_2",
+    label: "COLUMN 2",
+  },
+];
+const rows = [
+  {
+    key: "max",
+    statistic: "MAX",
+    column_1: "N/A",
+    column_2: "N/A",
+  },
+  {
+    key: "min",
+    statistic: "MIN",
+    column_1: "N/A",
+    column_2: "N/A",
+  },
+  {
+    key: "mean",
+    statistic: "MEAN",
+    column_1: "N/A",
+    column_2: "N/A",
+  },
+  {
+    key: "correlation",
+    statistic: "CORRELATION",
+    column_1: "N/A",
+    column_2: " - ",
+  },
+];
+
 function RenderDiagram(){
     return(
       // Display a page shows the title "Diagram" and a diagram
 
-      <div className="fixed left-0 top-0 bg-slate-300 w-screen h-screen sm:ml-14">
+      <div className="fixed left-0 top-0 bg-slate-300 w-screen sm:ml-14">
           <div className="h-14 bg-slate-50 ">
             <div className="flex flex-row mx-5">
               <h1 className="text-3xl">X-axis</h1>
@@ -154,13 +200,12 @@ function RenderDiagram(){
               <h1 className="text-3xl">Y-axis</h1>
               <Dropdown0022 dropdownData={yTableSelection} className=""/>
               <Dropdown0022 dropdownData={yColSelection} className=""/>
-
             </div>
           </div>
-          <h1 className="text-2xl">Diagram</h1>
-          <div className="App">
-          <Chart data={result} />
+          <div className="chart-container" style={{width: '100%',  height: '400px'}}>
+            <Chart data={result} options={diagramOptions} />
           </div>
+          <Table0022 />
       </div>
     );
 }
