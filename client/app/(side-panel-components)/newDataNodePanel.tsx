@@ -30,7 +30,7 @@ function NewDataNodePanel() {
   return (
     <div className="w-1/4 border flex flex-col">
       <div className="border flex-initial h-12 flex p-3 font-semibold text-lg text-gray-700">
-        Importing New Data Node {JSON.stringify(tables)}
+        Importing New Data Node
       </div>
       <div className="border flex-auto ">
         <form action="submit" className="flex flex-col">

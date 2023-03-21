@@ -19,7 +19,7 @@ const app: Express = express();
 /* Telling express that it is behind a proxy. */
 app.set("trust proxy", true);
 /* A middleware that parses the body of the request and makes it available on the request object. */
-app.use(json());
+app.use(json({ limit: "200mb" }));
 app.use(
   cookieSession({
     maxAge: 1000 * 60 * 60 * 24 * 2, // 2 days

@@ -31,6 +31,7 @@ build:
     - image: comp0022/dashboard-client
       context: client
       docker:
+        ssh: github=env/id_ed25519
         dockerfile: Dockerfile
       sync:
         manual:
