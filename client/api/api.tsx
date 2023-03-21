@@ -20,37 +20,34 @@ async function get(req: string) {
 async function post({
   url,
   body,
+  header,
   useClientCookies,
 }: {
   url: string;
   body: any;
+  header?: any;
   useClientCookies?: RequestCookies | ReadonlyRequestCookies;
 }) {
   let res;
-  console.log(
-    url,
-    useClientCookies?.getAll().map((c) => `${c.name}=${c.value}`)
-  );
+  // console.log(
+  //   url,
+  //   useClientCookies?.getAll().map((c) => `${c.name}=${c.value}`)
+  // );
 
   try {
-    res = await axios.post(
-      url,
-      {
-        ...body,
+    res = await axios.post(url, body, {
+      headers: {
+        ...header,
+        cookie: useClientCookies?.getAll().map((c) => `${c.name}=${c.value}`),
       },
-      {
-        headers: {
-          cookie: useClientCookies?.getAll().map((c) => `${c.name}=${c.value}`),
-        },
-      }
-    );
-    console.log(
-      ">>",
-      res.config.url,
-      res.status,
-      res.config.headers.cookie,
-      res.data
-    );
+    });
+    // console.log(
+    //   ">>",
+    //   res.config.url,
+    //   res.status,
+    //   res.config.headers.cookie,
+    //   res.data
+    // );
 
     return res.data;
   } catch (error) {
@@ -72,6 +69,7 @@ function constructUrl(service: string, path: string): string {
 
 const services: { [key: string]: string } = {
   auth: "http://auth-srv:3000",
+  data: "http://data-source:3000",
 };
 
 export { get, post, constructUrl };

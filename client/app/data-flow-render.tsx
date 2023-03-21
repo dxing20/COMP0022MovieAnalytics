@@ -23,6 +23,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import "./react-flow.css";
 import { shallow } from "zustand/shallow";
+import SidePanel from "./side-panel";
 
 const initialNodes: Node[] = [
   {
@@ -79,29 +80,83 @@ const selector = (state: State) => ({
   setSelectedNode: state.setSelectedNode,
 });
 
+enum SidebarContext {
+  None,
+  AddDataNode,
+  AddOperationNode,
+  AddRootNode,
+  ViewNodes,
+}
+
 function RenderDataFlow() {
   const { nodes, setNodes, edges, setEdges, selectedNode, setSelectedNode } =
     useDataStore(selector, shallow);
 
+  const [sidebarContext, setSidebarContext] = useState<SidebarContext>(
+    SidebarContext.None
+  );
+
   const onNodeClick = (event: React.MouseEvent, node: Node) => {
+    console.log(node);
     setSelectedNode(node);
+    setSidebarContext(SidebarContext.ViewNodes);
   };
 
   useEffect(() => {
-    setNodes(initialNodes);
-    setEdges(initialEdges);
+    // setNodes(initialNodes);
+    // setEdges(initialEdges);
   }, []);
 
   return (
-    <div className="border  flex-auto">
-      <ReactFlow nodes={nodes} edges={edges} fitView onNodeClick={onNodeClick}>
-        <Panel position="top-left">top-left</Panel>
-        <Controls />
-        <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
-        <Background color="#99b3ec" variant={"dots" as BackgroundVariant} />
-      </ReactFlow>
+    <div className="flex flex-col flex-auto">
+      <div className="h-14 border flex-initial flex flex-row">
+        {/* Tools */}
+        <div
+          onClick={() => {
+            setSidebarContext(SidebarContext.AddDataNode);
+          }}
+          className="flex-initial bg-red-400 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer"
+        >
+          Import Data Node
+        </div>
+        <div className="flex-initial bg-slate-400 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer">
+          Add Operation On selected
+        </div>
+        <div className="flex-initial bg-green-800 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer">
+          Add Root Node
+        </div>
+      </div>
+      <div className="h-10 border flex-initial flex flex-row">
+        {/* Tabs */}
+        <div className="w-8 flex-initial h-8 bg-slate-300 rounded-md text-center m-1 p-1 cursor-pointer">
+          ➕
+        </div>
+        <div className="h-8 flex-initial w-0 border m-1"></div>
+      </div>
+      <div className="flex-auto border flex flex-row">
+        <SidePanel panelContext={sidebarContext}></SidePanel>
+        <div className="border  flex-auto">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            fitView
+            onNodeClick={onNodeClick}
+          >
+            <Controls />
+            <MiniMap
+              nodeColor={nodeColor}
+              nodeStrokeWidth={3}
+              zoomable
+              pannable
+            />
+            <Background color="#99b3ec" variant={"dots" as BackgroundVariant} />
+          </ReactFlow>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default RenderDataFlow;
+
+export { SidebarContext };

@@ -10,6 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/limit-connections:  "10" # rate limit 10 connection per ip
     nginx.ingress.kubernetes.io/limit-rpm: "100" # rate limit requests per minute per ip
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   tls:
   - hosts:
@@ -24,6 +25,13 @@ spec:
             backend:
               service:
                 name: auth-srv
+                port:
+                  number: 3000
+          - path: /api/data/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: data-source-srv
                 port:
                   number: 3000
           - path: /?(.*)

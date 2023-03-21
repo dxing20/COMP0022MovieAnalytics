@@ -12,15 +12,11 @@ export default function SignOutPage() {
     event.preventDefault();
 
     const res = await post({
-      url: constructUrl("auth", "/api/users/signin"),
-      body: {
-        username,
-        password,
-      },
+      url: constructUrl("auth", "/api/users/signout"),
+      body: {},
     });
-    if (res.username != null) {
-      window.location.href = "/";
-    }
+
+    window.location.href = "/auth/signin";
   };
 
   return (
@@ -28,35 +24,8 @@ export default function SignOutPage() {
       <div className="h-14 bg-slate-50 ">{/* Header Div */}</div>
       <h1 className="text-3xl">Signout</h1>
       <form onSubmit={onSubmit}>
-        <label className="mr-1" htmlFor="username">
-          Username:
-        </label>
-        <input
-          className="mr-2"
-          type="text"
-          id="username"
-          name="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-
-        <label className="mr-1" htmlFor="password">
-          Password:
-        </label>
-        <input
-          className="mr-2"
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button type="submit">Sign In</button>
+        <button type="submit">Sign Out</button>
       </form>
-
-      <Link href="/dashboard">Dashboard</Link>
-      <Link href="/dashboard">Dashboard</Link>
     </div>
   );
 }
