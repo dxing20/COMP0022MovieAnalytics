@@ -9,6 +9,7 @@ import {
   GraphNode,
   RootNode,
 } from "@comp0022/common";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
 
@@ -36,6 +37,23 @@ function NodeViewPanel() {
     SetNode(node);
   }, [selectedNode]);
 
+  const importRootToData = async () => {
+    let serializedGraph = JSON.stringify(graph);
+
+    const res = await post({
+      url: constructUrl("data", "/api/data/importRoot"),
+      body: {
+        serializedGraph: serializedGraph,
+      },
+    });
+
+    if (res.success) {
+      alert("Root node imported to data");
+    }
+
+    console.log(res);
+  };
+
   return (
     <div className="w-1/4 border flex flex-col">
       <div className="border flex-initial h-12 flex p-3 font-semibold text-lg text-gray-700">
@@ -43,6 +61,18 @@ function NodeViewPanel() {
       </div>
       <div className="border flex-auto ">
         {node != null && JSON.stringify(node, null, 2)}
+
+        {node instanceof DataNode && (
+          <Link href={`/tables/${node.tableName}`}>
+            <div className="p-3 bg-gray-300">See View</div>
+          </Link>
+        )}
+
+        {node instanceof RootNode && (
+          <div onClick={importRootToData} className="p-3 bg-gray-300">
+            Import Root to Data
+          </div>
+        )}
       </div>
     </div>
   );

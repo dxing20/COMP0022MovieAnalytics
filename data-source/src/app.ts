@@ -13,6 +13,8 @@ import { Request, Response, Express } from "express";
 import { columnsRouter } from "./routes/columns";
 import { tablesRouter } from "./routes/tables";
 import { importRouter } from "./routes/import";
+import { tableRouter } from "./routes/table";
+import { importRootRouter } from "./routes/importroot";
 
 const app: Express = express();
 
@@ -41,6 +43,8 @@ app.use((req: Request, res: Response, next: any) => {
 app.use(columnsRouter);
 app.use(tablesRouter);
 app.use(importRouter);
+app.use(tableRouter);
+app.use(importRootRouter);
 
 app.all("*", async (req: Request, res: Response) => {
   throw new PageNotFoundError(req.originalUrl);
