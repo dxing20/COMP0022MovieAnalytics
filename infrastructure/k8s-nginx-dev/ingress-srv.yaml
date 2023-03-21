@@ -26,6 +26,13 @@ spec:
                 name: auth-srv
                 port:
                   number: 3000
+          - path: /api/data/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: data-source-srv
+                port:
+                  number: 3000
           - path: /?(.*)
             pathType: Prefix
             backend:

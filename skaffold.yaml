@@ -19,6 +19,15 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: comp0022/data-source
+      context: data-source
+      docker:
+        ssh: github=env/id_ed25519
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
     - image: comp0022/dashboard-client
       context: client
       docker:

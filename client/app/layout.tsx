@@ -17,7 +17,6 @@ export default async function RootLayout({
   });
 
   const [userStatus] = await Promise.all([userStatusPromise]);
-  console.log(userStatus);
 
   return (
     <html lang="en">

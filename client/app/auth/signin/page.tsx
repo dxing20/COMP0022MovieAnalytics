@@ -2,14 +2,11 @@
 
 import { constructUrl, post } from "@/api/api";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignInPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const router = useRouter();
 
   const onSubmit = async (event: any) => {
     event.preventDefault();

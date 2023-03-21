@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-source-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-source
+  template:
+    metadata:
+      labels:
+        app: data-source
+    spec:
+      containers:
+        - name: data-source
+          image: comp0022/data-source
+          env:
+            - name: POSTGRES_URI
+              value: 'database-1.cttntm0qlnea.eu-west-2.rds.amazonaws.com'
+            - name: KUBERNETES
+              value: 'true'
+            - name: POSTGRES_USERNAME
+              value: 'postgres'
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-source-srv
+spec:
+  selector:
+    app: data-source
+  ports:
+    - name: data-source
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
