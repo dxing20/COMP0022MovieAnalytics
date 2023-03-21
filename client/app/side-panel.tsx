@@ -4,6 +4,8 @@ import { useDataStore, State } from "@/hooks/use-data-store";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
 import NewDataNodePanel from "./(side-panel-components)/newDataNodePanel";
+import NewRootNodePanel from "./(side-panel-components)/newRootNode";
+import NodeViewPanel from "./(side-panel-components)/nodeView";
 import { SidebarContext } from "./data-flow-render";
 
 const selector = (state: State) => ({
@@ -33,17 +35,9 @@ function SidePanel({ panelContext }: { panelContext: SidebarContext }) {
       </div>
     );
   } else if (panelContext === SidebarContext.AddRootNode) {
-    return (
-      <div className="w-1/4 border flex flex-col">
-        Side Bar On Selected {panelContext} {JSON.stringify(selectedNode)}
-      </div>
-    );
+    return <NewRootNodePanel></NewRootNodePanel>;
   } else if (panelContext === SidebarContext.ViewNodes) {
-    return (
-      <div className="w-1/4 border flex flex-col">
-        Side Bar On Selected {panelContext} {JSON.stringify(selectedNode)}
-      </div>
-    );
+    return <NodeViewPanel></NodeViewPanel>;
   } else {
     throw new Error("Invalid panel context");
   }

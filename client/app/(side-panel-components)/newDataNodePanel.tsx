@@ -1,10 +1,20 @@
 "use client";
 
 import { constructUrl, post } from "@/api/api";
+import { useDataStore, State } from "@/hooks/use-data-store";
+import { cloneGraph, DataNode, Graph, RootNode } from "@comp0022/common";
 import { useEffect, useState } from "react";
+import { shallow } from "zustand/shallow";
+
+const selector = (state: State) => ({
+  graph: state.graph,
+  setGraph: state.setGraph,
+});
 
 function NewDataNodePanel() {
   const [tables, setTables] = useState<any>(null);
+  const { graph, setGraph } = useDataStore(selector, shallow);
+  const [tableName, setTableName] = useState<string>("null");
 
   useEffect(() => {
     post({
@@ -27,25 +37,62 @@ function NewDataNodePanel() {
     );
   }
 
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    if (!tables.includes(tableName)) {
+      alert("Table does not exist");
+      return;
+    }
+
+    console.log("submitting " + tableName + " " + graph);
+    // clones the graph
+    const newGraph: Graph = new Graph(graph.queryHandler);
+    newGraph.i = graph.i;
+    newGraph.nodes = graph.nodes.map((node) => {
+      if (node instanceof DataNode) {
+        const newNode = new DataNode(node.id, node.tableName);
+        newNode.status = node.status;
+        newNode.depth = node.depth;
+        newNode.error = node.error;
+        newNode.hasParent = node.hasParent;
+        newNode.columns = [...node.columns];
+        return newNode;
+      } else if (node instanceof RootNode) {
+        const newNode = new RootNode(node.id, node.child);
+        newNode.status = node.status;
+        newNode.depth = node.depth;
+        newNode.error = node.error;
+        newNode.hasParent = node.hasParent;
+        newNode.columns = [...node.columns];
+        return newNode;
+      } else {
+        throw new Error("Unknown node type");
+      }
+    });
+
+    if (graph.root) {
+      alert("Graph already has a root");
+      return;
+      // const rootIndex = newGraph.nodes.findIndex(
+      //   (node) => node.id === graph.root!.id
+      // );
+      // if (rootIndex !== -1) {
+      //   newGraph.root = newGraph.nodes[rootIndex] as RootNode;
+      // }
+    }
+    newGraph.addDataNode(tableName);
+    newGraph.clientRefresh();
+    setGraph(newGraph);
+  };
+
   return (
     <div className="w-1/4 border flex flex-col">
       <div className="border flex-initial h-12 flex p-3 font-semibold text-lg text-gray-700">
         Importing New Data Node
       </div>
       <div className="border flex-auto ">
-        <form action="submit" className="flex flex-col">
+        <form onSubmit={onSubmit} className="flex flex-col">
           {/* title, select source, add description */}
-          <div className="flex flex-row m-2">
-            <label className="mr-1" htmlFor="name">
-              Name
-            </label>
-            <input
-              className="mr-2 border rounded-md"
-              type="text"
-              id="name"
-              name="name"
-            />
-          </div>
           <div className="flex flex-row  m-2">
             <label className="mr-1" htmlFor="source">
               Source
@@ -54,14 +101,15 @@ function NewDataNodePanel() {
               className="mr-2 border rounded-md"
               name="source"
               id="source"
+              value={tableName}
+              onChange={(e) => setTableName(e.target.value)}
             >
-              {tables.length > 0 ? (
-                tables.map((table: string) => (
-                  <option value={table}>{table}</option>
-                ))
-              ) : (
-                <option value="null">No tables found</option>
-              )}
+              {tables.map((table: string) => (
+                <option key={table} value={table}>
+                  {table}
+                </option>
+              ))}
+              <option value="null">No tables</option>
             </select>
           </div>
           <div className="flex flex-col  m-2">

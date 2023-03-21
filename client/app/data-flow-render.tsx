@@ -73,6 +73,7 @@ const nodeColor = (node: Node) => {
 const selector = (state: State) => ({
   nodes: state.nodes,
   edges: state.edges,
+  graph: state.graph,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
 
@@ -89,8 +90,15 @@ enum SidebarContext {
 }
 
 function RenderDataFlow() {
-  const { nodes, setNodes, edges, setEdges, selectedNode, setSelectedNode } =
-    useDataStore(selector, shallow);
+  const {
+    nodes,
+    setNodes,
+    edges,
+    setEdges,
+    selectedNode,
+    setSelectedNode,
+    graph,
+  } = useDataStore(selector, shallow);
 
   const [sidebarContext, setSidebarContext] = useState<SidebarContext>(
     SidebarContext.None
@@ -103,9 +111,30 @@ function RenderDataFlow() {
   };
 
   useEffect(() => {
-    // setNodes(initialNodes);
-    // setEdges(initialEdges);
-  }, []);
+    const display = graph.getGraph();
+    const _nodes = display.nodes;
+    const _edges = display.edges;
+    // convert _node.id to string
+    _nodes.forEach((node) => {
+      node.id = node.id.toString();
+    });
+    // convert _edge.target and _edge.source to string
+    _edges.forEach((edge) => {
+      edge.source = edge.source.toString();
+      edge.target = edge.target.toString();
+    });
+
+    setNodes(_nodes as Node[]);
+    setEdges(_edges as Edge[]);
+    console.log(
+      "Graph changed " +
+        JSON.stringify(_nodes) +
+        " " +
+        JSON.stringify(_edges) +
+        " " +
+        JSON.stringify(nodes)
+    );
+  }, [graph]);
 
   return (
     <div className="flex flex-col flex-auto">
@@ -122,7 +151,12 @@ function RenderDataFlow() {
         <div className="flex-initial bg-slate-400 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer">
           Add Operation On selected
         </div>
-        <div className="flex-initial bg-green-800 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer">
+        <div
+          onClick={() => {
+            setSidebarContext(SidebarContext.AddRootNode);
+          }}
+          className="flex-initial bg-green-800 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer"
+        >
           Add Root Node
         </div>
       </div>
