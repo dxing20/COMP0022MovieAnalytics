@@ -46,29 +46,7 @@ function NewDataNodePanel() {
 
     console.log("submitting " + tableName + " " + graph);
     // clones the graph
-    const newGraph: Graph = new Graph(graph.queryHandler);
-    newGraph.i = graph.i;
-    newGraph.nodes = graph.nodes.map((node) => {
-      if (node instanceof DataNode) {
-        const newNode = new DataNode(node.id, node.tableName);
-        newNode.status = node.status;
-        newNode.depth = node.depth;
-        newNode.error = node.error;
-        newNode.hasParent = node.hasParent;
-        newNode.columns = [...node.columns];
-        return newNode;
-      } else if (node instanceof RootNode) {
-        const newNode = new RootNode(node.id, node.child);
-        newNode.status = node.status;
-        newNode.depth = node.depth;
-        newNode.error = node.error;
-        newNode.hasParent = node.hasParent;
-        newNode.columns = [...node.columns];
-        return newNode;
-      } else {
-        throw new Error("Unknown node type");
-      }
-    });
+    const newGraph: Graph = cloneGraph(graph);
 
     if (graph.root) {
       alert("Graph already has a root");
