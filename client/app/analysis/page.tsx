@@ -7,12 +7,22 @@ import { useState, useMemo } from "react";
 import { Chart as ChartJS, registerables } from 'chart.js';
 ChartJS.register(...registerables);
 import { Line, Scatter, Chart } from "react-chartjs-2";
-import { Dropdown } from "@nextui-org/react";
+import { Dropdown, Table } from "@nextui-org/react";
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+function GetAllTables() {
+  const [data, setData] = useState([]);
+  
+}
+
+type TableData = {
+  XLabel: string[];
+  YLabel: string[];
+
+  data: any[];
+};
 
 const result = {
-  labels,
+  labels: ["January", "February", "March", "April", "May", "June", "July"],
   datasets: [
     {
       type: 'line' as const,
@@ -20,21 +30,25 @@ const result = {
       borderColor: 'rgb(255, 99, 132)',
       borderWidth: 2,
       fill: false,
-      data: [33, 53, 85, 41, 44, 65],
-    },
-    {
-      type: 'bar' as const,
-      label: 'Dataset 2',
-      backgroundColor: 'rgb(75, 192, 192)',
-      data: [33, 53, 85, 41, 44, 65],
-      borderColor: 'white',
-      borderWidth: 2,
+      data: [        
+        { x: 10, y: 20 },
+        { x: 20, y: 20 },
+        { x: 30, y: 40 },
+        { x: 40, y: 50 },
+        { x: 50, y: 60 }
+      ],
     },
     {
       type: 'scatter' as const,
-      label: 'Dataset 3',
+      label: 'Dataset Name',
       backgroundColor: 'rgb(53, 162, 235)',
-      data: [33, 53, 85, 41, 44, 65],
+      data: [
+        { x: 10, y: 20 },
+        { x: 20, y: 30 },
+        { x: 30, y: 40 },
+        { x: 40, y: 50 },
+        { x: 50, y: 60 },
+      ],
     },
   ],
 };
@@ -43,11 +57,6 @@ type DropdownData = {
   default: string;
   items: any[];
 };
-
-function GetAllTables() {
-  const [data, setData] = useState([]);
-  
-}
 
 const xTableSelection: DropdownData = {
   default: "Table for X axis",
@@ -74,12 +83,63 @@ const yColSelection: DropdownData = {
 };
 
 function Dropdown0022(props){
-  const [selected, setSelected] = useState(new Set(["text"]));
+  const [selected, setSelected] = useState(new Set(["{props.default}"]));
 
   const selectedValue = useMemo(
     () => Array.from(selected).join(", ").replaceAll("_", " "),
     [selected]
   );
+
+  return (
+    <Dropdown>
+      <Dropdown.Button color="primary" css={{ tt: "capitalize" }}>
+        {selectedValue}
+      </Dropdown.Button>
+      <Dropdown.Menu
+        aria-label="Dynamic Single selection actions"
+        color="primary"
+        // disallowEmptySelection
+        selectionMode="single"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+        items={props.dropdownData.items}
+      >
+        {(item) => (
+          <Dropdown.Item
+            key={item.key}
+          >
+            {item.name}
+          </Dropdown.Item>
+        )}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+}
+
+function Table0022(props){
+  return (
+    <Table
+      aria-label="Example table with dynamic content"
+      css={{
+        height: "auto",
+        minWidth: "100%",
+      }}
+    >
+      <Table.Header columns={columns}>
+        {(column) => (
+          <Table.Column key={column.key}>{column.label}</Table.Column>
+        )}
+      </Table.Header>
+      <Table.Body items={rows}>
+        {(item) => (
+          <Table.Row key={item.key}>
+            {(columnKey) => <Table.Cell>{item[columnKey]}</Table.Cell>}
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
+  );
+}
 
   return (
     <Dropdown>
@@ -120,6 +180,7 @@ function RenderDiagram(){
               <h1 className="text-3xl">Y-axis</h1>
               <Dropdown0022 dropdownData={yTableSelection} className=""/>
               <Dropdown0022 dropdownData={yColSelection} className=""/>
+              <BSButton/>
             </div>
           </div>
           <h1 className="text-2xl">Diagram</h1>
