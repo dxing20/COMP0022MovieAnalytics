@@ -1,0 +1,133 @@
+"use client";
+
+import { constructUrl, post } from "@/api/api";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useMemo } from "react";
+import { Chart as ChartJS, registerables } from 'chart.js';
+ChartJS.register(...registerables);
+import { Line, Scatter, Chart } from "react-chartjs-2";
+import { Dropdown } from "@nextui-org/react";
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+const result = {
+  labels,
+  datasets: [
+    {
+      type: 'line' as const,
+      label: 'Dataset 1',
+      borderColor: 'rgb(255, 99, 132)',
+      borderWidth: 2,
+      fill: false,
+      data: [33, 53, 85, 41, 44, 65],
+    },
+    {
+      type: 'bar' as const,
+      label: 'Dataset 2',
+      backgroundColor: 'rgb(75, 192, 192)',
+      data: [33, 53, 85, 41, 44, 65],
+      borderColor: 'white',
+      borderWidth: 2,
+    },
+    {
+      type: 'scatter' as const,
+      label: 'Dataset 3',
+      backgroundColor: 'rgb(53, 162, 235)',
+      data: [33, 53, 85, 41, 44, 65],
+    },
+  ],
+};
+
+type DropdownData = {
+  default: string;
+  items: any[];
+};
+
+function GetAllTables() {
+  const [data, setData] = useState([]);
+  
+}
+
+const xTableSelection: DropdownData = {
+  default: "Table for X axis",
+  items: [{ key: "new", name: "New File" },
+  { key: "copy", name: "Copy Link" },
+  { key: "edit", name: "Edit File" },
+  { key: "delete", name: "Delete File" }
+]};
+const xColSelection: DropdownData = {
+  default: "Column for X axis",
+  items: []
+};
+const yTableSelection: DropdownData = {
+  default: "Table for Y axis",
+  items: 
+  [{ key: "new", name: "New File" },
+  { key: "copy", name: "Copy Link" },
+  { key: "edit", name: "Edit File" },
+  { key: "delete", name: "Delete File" }
+]};
+const yColSelection: DropdownData = {
+  default: "Column for Y axis",
+  items: []
+};
+
+function Dropdown0022(props){
+  const [selected, setSelected] = useState(new Set(["text"]));
+
+  const selectedValue = useMemo(
+    () => Array.from(selected).join(", ").replaceAll("_", " "),
+    [selected]
+  );
+
+  return (
+    <Dropdown>
+      <Dropdown.Button color="primary" css={{ tt: "capitalize" }}>
+        {selectedValue}
+      </Dropdown.Button>
+      <Dropdown.Menu
+        aria-label="Dynamic Single selection actions"
+        color="primary"
+        // disallowEmptySelection
+        selectionMode="single"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+        items={props.dropdownData.items}
+      >
+        {(item) => (
+          <Dropdown.Item
+            key={item.key}
+          >
+            {item.name}
+          </Dropdown.Item>
+        )}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+}
+
+function RenderDiagram(){
+    return(
+      // Display a page shows the title "Diagram" and a diagram
+
+      <div className="fixed left-0 top-0 bg-slate-300 w-screen h-screen sm:ml-14">
+          <div className="h-14 bg-slate-50 ">
+            <div className="flex flex-row mx-5">
+              <h1 className="text-3xl">X-axis</h1>
+              <Dropdown0022 dropdownData={xTableSelection} className=""/>
+              <Dropdown0022 dropdownData={xColSelection} className=""/>
+              <h1 className="text-3xl">Y-axis</h1>
+              <Dropdown0022 dropdownData={yTableSelection} className=""/>
+              <Dropdown0022 dropdownData={yColSelection} className=""/>
+            </div>
+          </div>
+          <h1 className="text-2xl">Diagram</h1>
+          <div className="App">
+          <Chart data={result} />
+          </div>
+      </div>
+    );
+}
+
+export default RenderDiagram;
