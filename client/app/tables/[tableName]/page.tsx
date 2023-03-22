@@ -3,7 +3,7 @@
 import RedirectSignin from "@/components/redirect";
 import { post, constructUrl } from "@/api/api";
 import { useEffect, useState } from "react";
-import { Table } from "@nextui-org/react";
+import { Table, Button } from "@nextui-org/react";
 import { stringify } from "querystring";
 
 function TableViewPage({ params }: any) {
@@ -17,6 +17,14 @@ function TableViewPage({ params }: any) {
   const [page, setPage] = useState<number>(0);
   const [keys, setKeys] = useState<any>([]);
   const [values, setValues] = useState<any>([]);
+
+  const handleNextPage = () => {
+    setPage(page + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setPage(page - 1);
+  };
 
   useEffect(() => {
     async function fetchUserStatus() {
@@ -76,6 +84,8 @@ function TableViewPage({ params }: any) {
       });
     });
     const rows = values;
+    const nextPage = "Next Page >";
+    const previousPage = "< Previous Page";
     console.log("columnsT", columns);
     console.log("rowsT", rows);
     return (
@@ -102,6 +112,17 @@ function TableViewPage({ params }: any) {
               )}
             </Table.Body>
           </Table>
+        </div>
+        <div className="flex justify-center items-center h-full">
+          <Button
+            disabled={page == 0 ? true : false}
+            onClick={handlePreviousPage}
+          >
+            {" "}
+            {previousPage}{" "}
+          </Button>
+          <div className="mx-2"></div>
+          <Button onClick={handleNextPage}> {nextPage} </Button>
         </div>
       </div>
     );
