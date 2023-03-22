@@ -97,7 +97,11 @@ export function JoinNodeForm(props: { nodetype: NodeType }) {
             return isNaN(Number(item));
           })
           .map((key) => {
-            return <option value={key}>{key}</option>;
+            return (
+              <option value={JoinType[key as keyof typeof JoinType]}>
+                {key}
+              </option>
+            );
           })}
       </select>
       <label htmlFor="left" className="m-1">

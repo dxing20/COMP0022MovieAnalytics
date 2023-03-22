@@ -50,7 +50,7 @@ function DataList() {
   let x = 1;
   const tableRows = tables.map((name: string) => ({
     key: x++,
-    "tablename": name,
+    tablename: name,
   }));
 
   return (
@@ -221,7 +221,6 @@ function DataList() {
         )}
 
         <div className="flex-auto">
-
           {/* <table className="border m-5 ">
             <thead>
               <tr>
@@ -237,11 +236,11 @@ function DataList() {
             </tbody>
           </table> */}
           <Table
-          aria-label="Example table with dynamic content"
-          css={{
-            height: "auto",
-            minWidth: "100%",
-          }}
+            aria-label="Example table with dynamic content"
+            css={{
+              height: "auto",
+              minWidth: "100%",
+            }}
           >
             <Table.Header columns={tableColumns}>
               {(column) => (
@@ -249,13 +248,15 @@ function DataList() {
               )}
             </Table.Header>
             <Table.Body items={tableRows}>
-              {(item) => (
+              {(item: any) => (
                 <Table.Row key={item.key}>
-                  {(columnKey) => <Table.Cell>
-                    <Link href={`/tables/${item[columnKey]}`}>
-                      {item[columnKey]}
-                    </Link> 
-                    </Table.Cell>}
+                  {(columnKey) => (
+                    <Table.Cell>
+                      <Link href={`/tables/${item[columnKey]}`}>
+                        {item[columnKey]}
+                      </Link>
+                    </Table.Cell>
+                  )}
                 </Table.Row>
               )}
             </Table.Body>

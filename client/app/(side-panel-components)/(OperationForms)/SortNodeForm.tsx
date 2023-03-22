@@ -4,7 +4,9 @@ import {
   Compare,
   Graph,
   GraphNode,
+  JoinType,
   NodeType,
+  Order,
 } from "@comp0022/common";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
@@ -14,13 +16,15 @@ const selector = (state: State) => ({
   setGraph: state.setGraph,
 });
 
-export function FilterNodeForm(props: { nodetype: NodeType }) {
+export function SortNodeForm(props: { nodetype: NodeType }) {
   const { graph, setGraph } = useDataStore(selector, shallow);
 
-  const [compare, setCompare] = useState<Compare>(Compare.EQUAL);
+  const [sortOrder, setSortOrder] = useState<
+    { column: string; order: Order }[]
+  >([]);
   const [child, setChild] = useState<string>("");
   const [column, setColumn] = useState<string>("");
-  const [value, setValue] = useState<string>("");
+  const [order, setOrder] = useState<Order>(Order.ASC);
 
   useEffect(() => {
     const parentlessNodes = graph.nodes.filter(
@@ -33,8 +37,8 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
     }
   }, []);
 
-  if (props.nodetype != NodeType.FILTER) {
-    console.log(props.nodetype, NodeType.FILTER);
+  if (props.nodetype != NodeType.SORT) {
+    console.log(props.nodetype, NodeType.SORT);
     return null;
   }
 
@@ -62,7 +66,7 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
 
     // add root node
     try {
-      newGraph.addFilterNode(Number(child), column, compare, value);
+      newGraph.addSortNode(Number(child), sortOrder);
     } catch (e) {
       alert(e);
       return;
@@ -74,28 +78,24 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col">
-      <label htmlFor="compare" className="m-1">
+      <label htmlFor="order" className="m-1">
         Join Type
       </label>
       <select
-        name="compare"
-        id="compare"
-        value={compare}
+        name="order"
+        id="order"
+        value={order}
         onChange={(e) => {
-          setCompare(e.target.value as unknown as Compare);
+          setOrder(e.target.value as unknown as Order);
         }}
         className="border rounded-sm m-3"
       >
-        {Object.keys(Compare)
+        {Object.keys(Order)
           .filter((item) => {
             return isNaN(Number(item));
           })
           .map((key) => {
-            return (
-              <option value={Compare[key as keyof typeof Compare]}>
-                {key}
-              </option>
-            );
+            return <option value={key}>{key}</option>;
           })}
       </select>
       <label htmlFor="child" className="m-1">
@@ -124,7 +124,7 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
       </select>
 
       <label htmlFor="column" className="m-1">
-        Filter Column
+        Column
       </label>
       <select
         name="column"
@@ -145,25 +145,35 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
             );
           })}
       </select>
-      <label htmlFor="value" className="m-1">
-        Value
-      </label>
-      <input
-        type="text"
-        name="value"
-        id="value"
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
+
+      <div className="flex flex-col  m-4 p-2 border">
+        <div className="flex flex-row justify-evenly border">
+          <div>Column Name</div>
+          <div>Order</div>
+        </div>
+        {sortOrder.map(({ column, order }) => (
+          <div key={column} className="flex flex-row justify-evenly">
+            <div>{column}</div>
+            <div>{order}</div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => {
+          setSortOrder([...sortOrder, { column, order }]);
         }}
-        className="border rounded-sm m-3"
-      />
+        className=" bg-slate-500 rounded-sm m-4 p-2 font-medium text-slate-200"
+      >
+        Add Node
+      </button>
 
       <button
         type="submit"
         className=" bg-slate-500 rounded-sm m-4 p-2 font-medium text-slate-200"
       >
-        Add
+        Add Node
       </button>
     </form>
   );

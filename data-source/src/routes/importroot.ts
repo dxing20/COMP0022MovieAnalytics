@@ -11,6 +11,8 @@ import {
   FilterNode,
   JoinNode,
   RuntimeQueryHandler,
+  SortNode,
+  AggregateNode,
 } from "@comp0022/common/build/util/query-node";
 
 const router: Router = Router();
@@ -124,7 +126,7 @@ router.post(
           node.id,
           node.child,
           node.compare,
-          node.column,
+          node.selectedColumn,
           node.value
         );
         filter.status = node.status;
@@ -133,6 +135,28 @@ router.post(
         filter.hasParent = node.hasParent;
         filter.columns = node.columns;
         return filter;
+      } else if (node.type === NodeType.SORT) {
+        const sort = new SortNode(node.id, node.child, node.sortOrder);
+        sort.status = node.status;
+        sort.depth = node.depth;
+        sort.error = node.error;
+        sort.hasParent = node.hasParent;
+        sort.columns = node.columns;
+        return sort;
+      } else if (node.type === NodeType.AGGREGATE) {
+        const aggregate = new AggregateNode(
+          node.id,
+          node.child,
+          node.aggregate,
+          node.groupColumn,
+          node.aggregateColumn
+        );
+        aggregate.status = node.status;
+        aggregate.depth = node.depth;
+        aggregate.error = node.error;
+        aggregate.hasParent = node.hasParent;
+        aggregate.columns = node.columns;
+        return aggregate;
       } else {
         throw new Error("Unknown node type");
       }
@@ -166,6 +190,11 @@ router.post(
     }
     console.log(text, params);
     let qRes;
+    const regex = /\$(\d+)/g;
+    let i = 1;
+    text = text.replace(regex, (match, group1) => {
+      return `$${i++}`;
+    });
 
     try {
       qRes = await pool.query(text, params);

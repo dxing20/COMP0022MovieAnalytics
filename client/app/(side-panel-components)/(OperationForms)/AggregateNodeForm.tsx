@@ -1,10 +1,13 @@
 import { State, useDataStore } from "@/hooks/use-data-store";
 import {
+  Aggregate,
   cloneGraph,
   Compare,
   Graph,
   GraphNode,
+  JoinType,
   NodeType,
+  Order,
 } from "@comp0022/common";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
@@ -14,32 +17,35 @@ const selector = (state: State) => ({
   setGraph: state.setGraph,
 });
 
-export function FilterNodeForm(props: { nodetype: NodeType }) {
+export function AggregateNodeForm(props: { nodetype: NodeType }) {
   const { graph, setGraph } = useDataStore(selector, shallow);
 
-  const [compare, setCompare] = useState<Compare>(Compare.EQUAL);
+  const [aggregate, setAggregate] = useState<Aggregate>(Aggregate.AVG);
   const [child, setChild] = useState<string>("");
-  const [column, setColumn] = useState<string>("");
-  const [value, setValue] = useState<string>("");
+  const [groupColumn, setGroupColumn] = useState<string>("");
+  const [aggregateColumn, setAggregateColumn] = useState<string>("");
 
   useEffect(() => {
     const parentlessNodes = graph.nodes.filter(
       (node: GraphNode) => !node.hasParent
     );
-    if (parentlessNodes.length > 1) {
+    if (parentlessNodes.length >= 1) {
       setChild(parentlessNodes[0].id.toString());
       if (parentlessNodes[0].columns.length > 0)
-        setColumn(parentlessNodes[0].columns[0]);
+        setGroupColumn(parentlessNodes[0].columns[0]);
+      if (parentlessNodes[0].columns.length > 1)
+        setAggregateColumn(parentlessNodes[0].columns[1]);
     }
-  }, []);
+  }, [graph]);
 
-  if (props.nodetype != NodeType.FILTER) {
-    console.log(props.nodetype, NodeType.FILTER);
+  if (props.nodetype != NodeType.AGGREGATE) {
+    console.log(props.nodetype, NodeType.AGGREGATE);
     return null;
   }
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    console.log(Number(child));
 
     if (graph.nodes.length < 1) {
       alert("Graph need at least one nodes");
@@ -49,11 +55,15 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
       alert("Graph already has a root");
       return;
     }
-    const childNode = graph.nodes.find(
-      (node: GraphNode) => node.id == Number(child)
-    );
+    const childNode = graph.nodes.find((node: GraphNode) => {
+      return node.id == Number(child);
+    });
     if (childNode == undefined || childNode.hasParent) {
       alert("Child node is not valid");
+      return;
+    }
+    if (groupColumn == aggregateColumn) {
+      alert("Group column and aggregate column cannot be the same");
       return;
     }
 
@@ -62,7 +72,12 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
 
     // add root node
     try {
-      newGraph.addFilterNode(Number(child), column, compare, value);
+      newGraph.addAggregateNode(
+        Number(child),
+        aggregate,
+        groupColumn,
+        aggregateColumn
+      );
     } catch (e) {
       alert(e);
       return;
@@ -74,25 +89,25 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col">
-      <label htmlFor="compare" className="m-1">
-        Join Type
+      <label htmlFor="aggregate" className="m-1">
+        Aggregate
       </label>
       <select
-        name="compare"
-        id="compare"
-        value={compare}
+        name="aggregate"
+        id="aggregate"
+        value={aggregate}
         onChange={(e) => {
-          setCompare(e.target.value as unknown as Compare);
+          setAggregate(e.target.value as unknown as Aggregate);
         }}
         className="border rounded-sm m-3"
       >
-        {Object.keys(Compare)
+        {Object.keys(Aggregate)
           .filter((item) => {
             return isNaN(Number(item));
           })
           .map((key) => {
             return (
-              <option value={Compare[key as keyof typeof Compare]}>
+              <option value={Aggregate[key as keyof typeof Aggregate]}>
                 {key}
               </option>
             );
@@ -106,7 +121,8 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
         id="child"
         value={child}
         onChange={(e) => {
-          setChild(e.target.value);
+          console.log("set child", e.target.value);
+          setChild(e.target.value.toString());
         }}
         className="border rounded-sm m-3"
       >
@@ -123,15 +139,15 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
           })}
       </select>
 
-      <label htmlFor="column" className="m-1">
-        Filter Column
+      <label htmlFor="groupColumn" className="m-1">
+        Group Column
       </label>
       <select
-        name="column"
-        id="column"
-        value={column}
+        name="groupColumn"
+        id="groupColumn"
+        value={groupColumn}
         onChange={(e) => {
-          setColumn(e.target.value);
+          setGroupColumn(e.target.value);
         }}
         className="border rounded-sm m-3"
       >
@@ -145,19 +161,29 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
             );
           })}
       </select>
-      <label htmlFor="value" className="m-1">
-        Value
+
+      <label htmlFor="aggregateColumn" className="m-1">
+        Aggregate Column
       </label>
-      <input
-        type="text"
-        name="value"
-        id="value"
-        value={value}
+      <select
+        name="aggregateColumn"
+        id="aggregateColumn"
+        value={aggregateColumn}
         onChange={(e) => {
-          setValue(e.target.value);
+          setAggregateColumn(e.target.value);
         }}
         className="border rounded-sm m-3"
-      />
+      >
+        {graph.nodes
+          .find((node: GraphNode) => node.id == Number(child))
+          ?.columns.map((column: any) => {
+            return (
+              <option key={column} value={column}>
+                {column}
+              </option>
+            );
+          })}
+      </select>
 
       <button
         type="submit"

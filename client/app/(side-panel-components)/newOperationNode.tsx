@@ -15,8 +15,10 @@ import {
 } from "@comp0022/common";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
+import { AggregateNodeForm } from "./(OperationForms)/AggregateNodeForm";
 import { FilterNodeForm } from "./(OperationForms)/FilterNodeForm";
 import { JoinNodeForm } from "./(OperationForms)/JoinNodeForm";
+import { SortNodeForm } from "./(OperationForms)/SortNodeForm";
 
 const selector = (state: State) => ({
   graph: state.graph,
@@ -60,6 +62,8 @@ function NewOperationNodePanel() {
         </select>
         <JoinNodeForm nodetype={nodetype} />
         <FilterNodeForm nodetype={nodetype} />
+        <SortNodeForm nodetype={nodetype} />
+        <AggregateNodeForm nodetype={nodetype} />
       </div>
     </div>
   );

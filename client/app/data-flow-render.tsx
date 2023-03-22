@@ -154,7 +154,7 @@ function RenderDataFlow() {
           }}
           className="flex-initial bg-slate-400 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer"
         >
-          Add Operation On selected
+          Add Operation
         </div>
         <div
           onClick={() => {

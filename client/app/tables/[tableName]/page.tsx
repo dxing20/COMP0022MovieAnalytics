@@ -117,12 +117,19 @@ function TableViewPage({ params }: any) {
           <Button
             disabled={page == 0 ? true : false}
             onClick={handlePreviousPage}
+            className="text-gray-500 bg-gray-200"
           >
             {" "}
             {previousPage}{" "}
           </Button>
           <div className="mx-2"></div>
-          <Button onClick={handleNextPage}> {nextPage} </Button>
+          <Button
+            onClick={handleNextPage}
+            className="text-gray-500 bg-gray-200"
+          >
+            {" "}
+            {nextPage}{" "}
+          </Button>
         </div>
       </div>
     );
