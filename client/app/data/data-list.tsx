@@ -2,6 +2,8 @@
 
 import { constructUrl, post } from "@/api/api";
 import { useEffect, useState } from "react";
+import { Table } from "@nextui-org/react";
+import Link from "next/link";
 
 enum columnTypes {
   integer = "integer",
@@ -38,6 +40,18 @@ function DataList() {
         console.log(err);
       });
   }, []);
+
+  const tableColumns = [
+    {
+      key: "tablename",
+      label: "Table Name",
+    },
+  ];
+  let x = 1;
+  const tableRows = tables.map((name: string) => ({
+    key: x++,
+    "tablename": name,
+  }));
 
   return (
     <div className="flex flex-col flex-auto ">
@@ -207,7 +221,8 @@ function DataList() {
         )}
 
         <div className="flex-auto">
-          <table className="border m-5 ">
+
+          {/* <table className="border m-5 ">
             <thead>
               <tr>
                 <th>Data</th>
@@ -220,7 +235,31 @@ function DataList() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
+          <Table
+          aria-label="Example table with dynamic content"
+          css={{
+            height: "auto",
+            minWidth: "100%",
+          }}
+          >
+            <Table.Header columns={tableColumns}>
+              {(column) => (
+                <Table.Column key={column.key}>{column.label}</Table.Column>
+              )}
+            </Table.Header>
+            <Table.Body items={tableRows}>
+              {(item) => (
+                <Table.Row key={item.key}>
+                  {(columnKey) => <Table.Cell>
+                    <Link href={`/tables/${item[columnKey]}`}>
+                      {item[columnKey]}
+                    </Link> 
+                    </Table.Cell>}
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table>
         </div>
       </div>
     </div>
