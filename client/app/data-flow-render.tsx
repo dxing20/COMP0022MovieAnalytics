@@ -148,7 +148,12 @@ function RenderDataFlow() {
         >
           Import Data Node
         </div>
-        <div className="flex-initial bg-slate-400 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer">
+        <div
+          onClick={() => {
+            setSidebarContext(SidebarContext.AddOperationNode);
+          }}
+          className="flex-initial bg-slate-400 m-2 p-2 rounded-sm font-semibold text-white cursor-pointer"
+        >
           Add Operation On selected
         </div>
         <div

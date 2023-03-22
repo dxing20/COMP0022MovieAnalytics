@@ -19,7 +19,7 @@ async function DataPage() {
 
   return (
     <div className="fixed left-0 top-0 border w-screen h-screen sm:ml-14 flex flex-col ">
-      <div className="h-14 border flex-initial"> 🧰 Data </div>
+      <div className="h-14 border flex-initial text-lg"> 🧰 Data </div>
 
       <DataList></DataList>
     </div>

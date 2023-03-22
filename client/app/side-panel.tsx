@@ -3,6 +3,7 @@ import { constructUrl, post } from "@/api/api";
 import { useDataStore, State } from "@/hooks/use-data-store";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
+import NewOperationNodePanel from "./(side-panel-components)/newOperationNode";
 import NewDataNodePanel from "./(side-panel-components)/newDataNodePanel";
 import NewRootNodePanel from "./(side-panel-components)/newRootNode";
 import NodeViewPanel from "./(side-panel-components)/nodeView";
@@ -29,11 +30,7 @@ function SidePanel({ panelContext }: { panelContext: SidebarContext }) {
   } else if (panelContext === SidebarContext.AddDataNode) {
     return <NewDataNodePanel></NewDataNodePanel>;
   } else if (panelContext === SidebarContext.AddOperationNode) {
-    return (
-      <div className="w-1/4 border flex flex-col">
-        Side Bar On Selected {panelContext} {JSON.stringify(selectedNode)}
-      </div>
-    );
+    return <NewOperationNodePanel></NewOperationNodePanel>;
   } else if (panelContext === SidebarContext.AddRootNode) {
     return <NewRootNodePanel></NewRootNodePanel>;
   } else if (panelContext === SidebarContext.ViewNodes) {
