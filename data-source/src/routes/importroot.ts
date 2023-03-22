@@ -8,6 +8,7 @@ import {
   Graph,
   NodeType,
   RootNode,
+  FilterNode,
   JoinNode,
   RuntimeQueryHandler,
 } from "@comp0022/common/build/util/query-node";
@@ -118,11 +119,26 @@ router.post(
         join.hasParent = node.hasParent;
         join.columns = node.columns;
         return join;
+      } else if (node.type === NodeType.FILTER) {
+        const filter = new FilterNode(
+          node.id,
+          node.child,
+          node.compare,
+          node.column,
+          node.value
+        );
+        filter.status = node.status;
+        filter.depth = node.depth;
+        filter.error = node.error;
+        filter.hasParent = node.hasParent;
+        filter.columns = node.columns;
+        return filter;
       } else {
         throw new Error("Unknown node type");
       }
     });
     graph.root = parsed.root;
+    console.log(JSON.stringify(parsed));
 
     let rootSql = await graph.resolveRootQuery();
 

@@ -65,12 +65,10 @@ function NodeViewPanel() {
       <div className="border flex-auto ">
         {node != null && JSON.stringify(node, null, 2)}
 
-        <label className="m-4 p-2 font-medium text-slate-200">
-          Import Name
-        </label>
+        <label className="m-4 p-2 font-medium ">Import Name</label>
         <input
           type="text"
-          className="bg-slate-500 rounded-sm m-4 p-2 font-medium text-slate-200"
+          className="border rounded-sm m-4 p-2 font-medium "
           value={importName}
           onChange={(e) => {
             setImportName(e.target.value);
