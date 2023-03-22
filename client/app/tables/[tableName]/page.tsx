@@ -3,6 +3,8 @@
 import RedirectSignin from "@/components/redirect";
 import { post, constructUrl } from "@/api/api";
 import { useEffect, useState } from "react";
+import { Table } from "@nextui-org/react";
+import { stringify } from "querystring";
 
 function TableViewPage({ params }: any) {
   console.error("params", params);
@@ -13,6 +15,8 @@ function TableViewPage({ params }: any) {
   const [data, setData] = useState<any>({});
   const [pageSize, setPageSize] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
+  const [keys, setKeys] = useState<any>([]);
+  const [values, setValues] = useState<any>([]);
 
   useEffect(() => {
     async function fetchUserStatus() {
@@ -35,8 +39,10 @@ function TableViewPage({ params }: any) {
           if (res.error) {
             throw res.error;
           }
-          console.log(res);
-          setData(res);
+          // console.log(res.data.rows[0]);
+          setData(Object.keys(res.data.rows[0]));
+          setKeys(Object.keys(res.data.rows[0]));
+          setValues(res.data.rows);
         })
         .catch((err) => {
           console.log(err);
@@ -51,14 +57,56 @@ function TableViewPage({ params }: any) {
   if (!userStatus.loggedIn) {
     window.location.href = "/auth/signin";
   }
-
-  return (
-    <div className="fixed left-0 top-0 border w-screen h-screen sm:ml-14 flex flex-col ">
-      <div className="h-14 border flex-initial"> TableView </div>
-
-      <div className="flex-auto">{JSON.stringify(data, null, 2)}</div>
-    </div>
-  );
+  
+  if (keys.length === 0) {
+    return <div>Loading...</div>;
+  }
+  else{
+    // converts the keys to an array that fits nextUI.
+    const columns = keys.map((str) => ({ key: str, label: str }));
+    // Convert, if exist, arrat to string.
+    let count = 1;
+    values.forEach((row) => {
+      row["key"] = count.toString();
+      count++;
+      Object.keys(row).forEach((key) => {
+        const value = row[key];
+        if (Array.isArray(value)) {
+          row[key] = value.join(", ");
+        }
+      });
+    });
+    const rows = values;
+    console.log("columnsT", columns);
+    console.log("rowsT", rows);
+    return (
+      <div className="fixed left-0 top-0 border w-screen h-screen sm:ml-14 flex flex-col ">
+        <div className="h-14 border flex-initial"> TableView </div>
+          <div>
+          <Table
+          aria-label="Example table with dynamic content"
+          css={{
+            height: "auto",
+            minWidth: "100%",
+          }}
+          >
+            <Table.Header columns={columns}>
+              {(column) => (
+                <Table.Column key={column.key}>{column.label}</Table.Column>
+              )}
+            </Table.Header>
+            <Table.Body items={rows}>
+              {(item) => (
+                <Table.Row key={item.key}>
+                  {(columnKey) => <Table.Cell>{item[columnKey]}</Table.Cell>}
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table>
+          </div>
+      </div>
+    );
+  }
 }
 
 export default TableViewPage;
