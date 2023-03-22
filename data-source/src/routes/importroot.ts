@@ -8,6 +8,7 @@ import {
   Graph,
   NodeType,
   RootNode,
+  JoinNode,
   RuntimeQueryHandler,
 } from "@comp0022/common/build/util/query-node";
 
@@ -15,11 +16,17 @@ const router: Router = Router();
 
 router.post(
   "/api/data/importRoot",
-  [body("serializedGraph").trim().notEmpty().withMessage("graph not provided")],
+  [
+    body("serializedGraph").trim().notEmpty().withMessage("graph not provided"),
+    body("importName")
+      .trim()
+      .notEmpty()
+      .withMessage("import name not provided"),
+  ],
   checkValidationResult,
   async (req: Request, res: Response) => {
-    const { serializedGraph } = req.body;
-    // deserializing
+    const { serializedGraph, importName } = req.body;
+    // deserializing graph
     const parsed = JSON.parse(serializedGraph);
 
     const getTableNames = async (): Promise<string[]> => {
@@ -77,7 +84,6 @@ router.post(
       new RuntimeQueryHandler(getTableNames, getColumns)
     );
 
-    console.error(parsed);
     // rebuild the graph
     graph.i = parsed.i;
     graph.nodes = parsed.nodes.map((node: any) => {
@@ -97,6 +103,21 @@ router.post(
         root.hasParent = node.hasParent;
         root.columns = node.columns;
         return root;
+      } else if (node.type === NodeType.JOIN) {
+        const join = new JoinNode(
+          node.id,
+          node.child1,
+          node.child2,
+          node.joinType,
+          node.on1,
+          node.on2
+        );
+        join.status = node.status;
+        join.depth = node.depth;
+        join.error = node.error;
+        join.hasParent = node.hasParent;
+        join.columns = node.columns;
+        return join;
       } else {
         throw new Error("Unknown node type");
       }
@@ -105,7 +126,10 @@ router.post(
 
     let rootSql = await graph.resolveRootQuery();
 
-    if (!rootSql) {
+    console.log(rootSql);
+
+    if (rootSql === null || rootSql === undefined) {
+      console.log(JSON.stringify(graph));
       throw new Error("Error while resolving root query");
     }
 
@@ -113,9 +137,28 @@ router.post(
       verifiedTableNames: new Set(await getTableNames()),
     });
 
-    const { text, params } = sql;
+    let { text, params } = sql;
 
-    res.status(200).send({ query: sql });
+    const tablenames = await getTableNames();
+    if (tablenames.includes(importName)) {
+      throw new Error("Table already exists");
+    } else if (!/^[a-z_][a-zA-Z0-9_]*$/.test(importName)) {
+      // regex to check if table name is valid
+      throw new Error("Invalid table name");
+    } else {
+      text = `CREATE TABLE ${importName} AS (${text})`;
+    }
+    console.log(text, params);
+    let qRes;
+
+    try {
+      qRes = await pool.query(text, params);
+    } catch (err) {
+      console.error(err);
+      throw new Error("Failed to create table");
+    }
+
+    res.status(200).send({ query: { text, params }, result: qRes.rows });
   }
 );
 

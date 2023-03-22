@@ -22,6 +22,7 @@ build:
     - image: comp0022/data-source
       context: data-source
       docker:
+        noCache: true
         ssh: github=env/id_ed25519
         dockerfile: Dockerfile
       sync:

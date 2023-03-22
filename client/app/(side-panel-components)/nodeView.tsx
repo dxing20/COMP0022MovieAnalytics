@@ -21,7 +21,7 @@ const selector = (state: State) => ({
 
 function NodeViewPanel() {
   const { graph, setGraph, selectedNode } = useDataStore(selector, shallow);
-
+  const [importName, setImportName] = useState<string>("");
   const [node, SetNode] = useState<GraphNode | null>(null);
 
   useEffect(() => {
@@ -44,11 +44,14 @@ function NodeViewPanel() {
       url: constructUrl("data", "/api/data/importRoot"),
       body: {
         serializedGraph: serializedGraph,
+        importName: importName,
       },
     });
 
     if (res.success) {
       alert("Root node imported to data");
+      // go to tables page
+      window.location.href = `/tables/${importName}`;
     }
 
     console.log(res);
@@ -62,6 +65,17 @@ function NodeViewPanel() {
       <div className="border flex-auto ">
         {node != null && JSON.stringify(node, null, 2)}
 
+        <label className="m-4 p-2 font-medium text-slate-200">
+          Import Name
+        </label>
+        <input
+          type="text"
+          className="bg-slate-500 rounded-sm m-4 p-2 font-medium text-slate-200"
+          value={importName}
+          onChange={(e) => {
+            setImportName(e.target.value);
+          }}
+        />
         {node instanceof DataNode && (
           <Link href={`/tables/${node.tableName}`}>
             <div className="p-3 bg-gray-300">See View</div>
