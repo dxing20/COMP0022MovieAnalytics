@@ -3,6 +3,7 @@
 import { constructUrl, post } from "@/api/api";
 import { useEffect, useState } from "react";
 import { Table } from "@nextui-org/react";
+import Link from "next/link";
 
 enum columnTypes {
   integer = "integer",
@@ -42,14 +43,14 @@ function DataList() {
 
   const tableColumns = [
     {
-      key: "table name",
+      key: "tablename",
       label: "Table Name",
     },
   ];
   let x = 1;
   const tableRows = tables.map((name: string) => ({
     key: x++,
-    "table name": name,
+    "tablename": name,
   }));
 
   return (
@@ -250,7 +251,11 @@ function DataList() {
             <Table.Body items={tableRows}>
               {(item) => (
                 <Table.Row key={item.key}>
-                  {(columnKey) => <Table.Cell>{item[columnKey]}</Table.Cell>}
+                  {(columnKey) => <Table.Cell>
+                    <Link href={`/tables/${item[columnKey]}`}>
+                      {item[columnKey]}
+                    </Link> 
+                    </Table.Cell>}
                 </Table.Row>
               )}
             </Table.Body>
