@@ -86,15 +86,14 @@ function DataList() {
                     header: {
                       "Content-Type": "multipart/form-data",
                     },
-                  })
-                    .then((res) => {
-                      console.log(res);
-                      alert("Data imported successfully");
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                      alert("Data imported failed");
-                    });
+                  }).then((res) => {
+                    if (res.error) {
+                      alert(res.error);
+                      return;
+                    }
+                    console.log(res);
+                    alert("Data imported successfully");
+                  });
                 }}
                 className="flex flex-col"
               >

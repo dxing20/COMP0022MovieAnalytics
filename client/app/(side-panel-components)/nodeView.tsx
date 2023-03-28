@@ -48,10 +48,12 @@ function NodeViewPanel() {
       },
     });
 
-    if (res.success) {
+    if (res.status === 200) {
       alert("Root node imported to data");
       // go to tables page
       window.location.href = `/tables/${importName}`;
+    } else {
+      alert("Error importing root node to data, check console");
     }
 
     console.log(res);

@@ -24,7 +24,7 @@ router.post(
 
     // Check if user exists
     try {
-      query = await pool.query("SELECT * FROM users WHERE userId = $1", [
+      query = await pool.query("SELECT * FROM users WHERE username = $1", [
         username,
       ]);
     } catch (err) {

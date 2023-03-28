@@ -18,8 +18,11 @@ async function DataFlowPage() {
   }
 
   return (
-    <div className="fixed left-0 top-0 border w-screen h-screen sm:ml-14 flex flex-col ">
-      <div className="h-14 border flex-initial"> 🧰 Data Flow Tool </div>
+    <div className="fixed left-0 top-0 border w-screen h-screen sm:ml-14 flex flex-col justify-center">
+      <div className="h-14 border flex-initial text-lg pt-3 pl-2  font-extrabold">
+        {" "}
+        Data Flow Tool{" "}
+      </div>
 
       <DataFlowRender></DataFlowRender>
     </div>

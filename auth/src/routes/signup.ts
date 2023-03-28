@@ -32,7 +32,7 @@ router.post(
 
     // Check if user exists
     try {
-      let query = await pool.query("SELECT * FROM users WHERE userId = $1", [
+      let query = await pool.query("SELECT * FROM users WHERE username = $1", [
         username,
       ]);
       if (query.rows.length !== 0) {
