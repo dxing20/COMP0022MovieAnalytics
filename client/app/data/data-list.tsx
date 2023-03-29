@@ -54,7 +54,7 @@ function DataList() {
   }));
 
   return (
-    <div className="flex flex-col flex-auto ">
+    <div className="flex flex-col flex-auto overflow-y-auto">
       <div className="h-14 border flex-initial flex flex-row">
         <div
           onClick={() => setImportDisplay(!importDisplay)}

@@ -1,213 +1,98 @@
+// pages/correlation.tsx
 "use client";
-
+import { useState } from "react";
 import { constructUrl, post } from "@/api/api";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
-import { Chart as ChartJS, registerables } from 'chart.js';
-ChartJS.register(...registerables);
-import { Line, Scatter, Chart } from "react-chartjs-2";
-import { Dropdown, Table } from "@nextui-org/react";
-import { truncate } from "fs";
+import { Button, TextField, Container, Typography } from "@mui/material";
 
-function GetAllTables() {
-  const [data, setData] = useState([]);
-  
-}
+export default function Correlation() {
+    const [tablename, setTablename] = useState("");
+    const [column1, setColumn1] = useState("");
+    const [column2, setColumn2] = useState("");
+    const [results, setResults] = useState<any | null>(null);
 
-type DiagramData = {
-  XLabel: string[];
-  YLabel: string[];
+    const handleSubmit = async () => {
+        try {
+            const url = constructUrl("data", "/api/data/correlation");
+            const response = await post({
+                url,
+                body: { tablename, column1, column2 },
+            });
 
-  data: any[];
-};
+            setResults(response);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-const diagramOptions ={
-  responsive: true,
-}
+    return (
+        <div className="fixed left-0 top-0 bg-slate-300 w-screen sm:ml-14">
+            <div className="h-14 bg-slate-50 ">
+                <Container>
+                    <Typography variant="h4" gutterBottom>
+                        Correlation Analysis
+                    </Typography>
+                    <TextField
+                        label="Table Name"
+                        value={tablename}
+                        onChange={(e) => setTablename(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="First Column"
+                        value={column1}
+                        onChange={(e) => setColumn1(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Second Column"
+                        value={column2}
+                        onChange={(e) => setColumn2(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <Button onClick={handleSubmit} variant="contained" color="primary">
+                        Analyze
+                    </Button>
 
-const result = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    {
-      type: 'line' as const,
-      label: 'Dataset 1',
-      borderColor: 'rgb(255, 99, 132)',
-      borderWidth: 2,
-      fill: false,
-      data: [        
-        { x: 10, y: 20 },
-        { x: 20, y: 20 },
-        { x: 30, y: 40 },
-        { x: 40, y: 50 },
-        { x: 50, y: 60 }
-      ],
-    },
-    {
-      type: 'scatter' as const,
-      label: 'Dataset Name',
-      backgroundColor: 'rgb(53, 162, 235)',
-      data: [
-        { x: 10, y: 20 },
-        { x: 20, y: 30 },
-        { x: 30, y: 40 },
-        { x: 40, y: 50 },
-        { x: 50, y: 60 },
-      ],
-    },
-  ],
-};
+                    {results && (
+                        <div>
+                            <Typography variant="h6" gutterBottom>
+                                Results
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Correlation: {results.correlation}
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Slope: {results.slope}
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Intercept: {results.intercept}
+                            </Typography>
 
-type DropdownData = {
-  default: string;
-  items: any[];
-};
-
-const xTableSelection: DropdownData = {
-  default: "Table for X axis",
-  items: [{ key: "new", name: "New File" },
-  { key: "copy", name: "Copy Link" },
-  { key: "edit", name: "Edit File" },
-  { key: "delete", name: "Delete File" }
-]};
-const xColSelection: DropdownData = {
-  default: "Column for X axis",
-  items: []
-};
-const yTableSelection: DropdownData = {
-  default: "Table for Y axis",
-  items: 
-  [{ key: "new", name: "New File" },
-  { key: "copy", name: "Copy Link" },
-  { key: "edit", name: "Edit File" },
-  { key: "delete", name: "Delete File" }
-]};
-const yColSelection: DropdownData = {
-  default: "Column for Y axis",
-  items: []
-};
-
-function Dropdown0022(props){
-  const [selected, setSelected] = useState(new Set().add(props.dropdownData.default));
-
-  const selectedValue = useMemo(
-    () => Array.from(selected).join(", ").replaceAll("_", " "),
-    [selected]
-  );
-
-  return (
-    <Dropdown>
-      <Dropdown.Button color="primary" css={{ tt: "capitalize" }}>
-        {selectedValue}
-      </Dropdown.Button>
-      <Dropdown.Menu
-        aria-label="Dynamic Single selection actions"
-        color="primary"
-        // disallowEmptySelection
-        selectionMode="single"
-        selectedKeys={selected}
-        onSelectionChange={setSelected}
-        items={props.dropdownData.items}
-      >
-        {(item) => (
-          <Dropdown.Item
-            key={item.key}
-          >
-            {item.name}
-          </Dropdown.Item>
-        )}
-      </Dropdown.Menu>
-    </Dropdown>
-  );
-}
-
-function Table0022(props){
-  return (
-    <Table
-      aria-label="Example table with dynamic content"
-      css={{
-        height: "auto",
-        minWidth: "100%",
-      }}
-    >
-      <Table.Header columns={columns}>
-        {(column) => (
-          <Table.Column key={column.key}>{column.label}</Table.Column>
-        )}
-      </Table.Header>
-      <Table.Body items={rows}>
-        {(item) => (
-          <Table.Row key={item.key}>
-            {(columnKey) => <Table.Cell>{item[columnKey]}</Table.Cell>}
-          </Table.Row>
-        )}
-      </Table.Body>
-    </Table>
-  );
-}
-
-const columns = [
-  {
-    key: "statistic",
-    label: "STATISTIC",
-  },
-  {
-    key: "column_1",
-    label: "COLUMN 1",
-  },
-  {
-    key: "column_2",
-    label: "COLUMN 2",
-  },
-];
-const rows = [
-  {
-    key: "max",
-    statistic: "MAX",
-    column_1: "N/A",
-    column_2: "N/A",
-  },
-  {
-    key: "min",
-    statistic: "MIN",
-    column_1: "N/A",
-    column_2: "N/A",
-  },
-  {
-    key: "mean",
-    statistic: "MEAN",
-    column_1: "N/A",
-    column_2: "N/A",
-  },
-  {
-    key: "correlation",
-    statistic: "CORRELATION",
-    column_1: "N/A",
-    column_2: " - ",
-  },
-];
-
-function RenderDiagram(){
-    return(
-      // Display a page shows the title "Diagram" and a diagram
-
-      <div className="fixed left-0 top-0 bg-slate-300 w-screen sm:ml-14">
-          <div className="h-14 bg-slate-50 ">
-            <div className="flex flex-row mx-5">
-              <h1 className="text-3xl">X-axis</h1>
-              <Dropdown0022 dropdownData={xTableSelection} className=""/>
-              <Dropdown0022 dropdownData={xColSelection} className=""/>
-              <h1 className="text-3xl">Y-axis</h1>
-              <Dropdown0022 dropdownData={yTableSelection} className=""/>
-              <Dropdown0022 dropdownData={yColSelection} className=""/>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Average</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{column1}</td>
+                                    <td>{results["avg_" + column1]}</td>
+                                </tr>
+                                <tr>
+                                    <td>{column2}</td>
+                                    <td>{results["avg_" + column2]}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </Container>
             </div>
-          </div>
-          <div className="chart-container" style={{width: '100%',  height: '400px'}}>
-            <Chart data={result} options={diagramOptions} />
-          </div>
-          <Table0022 />
-      </div>
+        </div>
     );
 }
-
-export default RenderDiagram;
