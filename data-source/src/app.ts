@@ -15,6 +15,7 @@ import { tablesRouter } from "./routes/tables";
 import { importRouter } from "./routes/import";
 import { tableRouter } from "./routes/table";
 import { importRootRouter } from "./routes/importroot";
+import { correlationRouter } from "./routes/correlation";
 
 const app: Express = express();
 
@@ -45,6 +46,7 @@ app.use(tablesRouter);
 app.use(importRouter);
 app.use(tableRouter);
 app.use(importRootRouter);
+app.use(correlationRouter);
 
 app.all("*", async (req: Request, res: Response) => {
   throw new PageNotFoundError(req.originalUrl);
