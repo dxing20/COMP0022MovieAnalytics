@@ -12,12 +12,15 @@ import {
   RootNode,
   Compare,
   GraphNode,
+  LimitNode,
 } from "@comp0022/common";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
 import { AggregateNodeForm } from "./(OperationForms)/AggregateNodeForm";
 import { FilterNodeForm } from "./(OperationForms)/FilterNodeForm";
 import { JoinNodeForm } from "./(OperationForms)/JoinNodeForm";
+import { LimitNodeForm } from "./(OperationForms)/LimitNodeForm";
+import { SelectNodeForm } from "./(OperationForms)/SelectNodeForm";
 import { SortNodeForm } from "./(OperationForms)/SortNodeForm";
 
 const selector = (state: State) => ({
@@ -64,6 +67,8 @@ function NewOperationNodePanel() {
         <FilterNodeForm nodetype={nodetype} />
         <SortNodeForm nodetype={nodetype} />
         <AggregateNodeForm nodetype={nodetype} />
+        <LimitNodeForm nodetype={nodetype} />
+        <SelectNodeForm nodetype={nodetype} />
       </div>
     </div>
   );

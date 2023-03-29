@@ -13,6 +13,8 @@ import {
   RuntimeQueryHandler,
   SortNode,
   AggregateNode,
+  LimitNode,
+  SelectNode,
 } from "@comp0022/common/build/util/query-node";
 
 const router: Router = Router();
@@ -157,6 +159,22 @@ router.post(
         aggregate.hasParent = node.hasParent;
         aggregate.columns = node.columns;
         return aggregate;
+      } else if (node.type === NodeType.LIMIT) {
+        const limit = new LimitNode(node.id, node.child, node.limit);
+        limit.status = node.status;
+        limit.depth = node.depth;
+        limit.error = node.error;
+        limit.hasParent = node.hasParent;
+        limit.columns = node.columns;
+        return limit;
+      } else if (node.type === NodeType.SELECT) {
+        const select = new SelectNode(node.id, node.child, node.columns);
+        select.status = node.status;
+        select.depth = node.depth;
+        select.error = node.error;
+        select.hasParent = node.hasParent;
+        select.columns = node.columns;
+        return select;
       } else {
         throw new Error("Unknown node type");
       }

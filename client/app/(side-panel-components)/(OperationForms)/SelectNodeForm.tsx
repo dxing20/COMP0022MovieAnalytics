@@ -4,7 +4,9 @@ import {
   Compare,
   Graph,
   GraphNode,
+  JoinType,
   NodeType,
+  Order,
 } from "@comp0022/common";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
@@ -14,13 +16,14 @@ const selector = (state: State) => ({
   setGraph: state.setGraph,
 });
 
-export function FilterNodeForm(props: { nodetype: NodeType }) {
+export function SelectNodeForm(props: { nodetype: NodeType }) {
   const { graph, setGraph } = useDataStore(selector, shallow);
-
-  const [compare, setCompare] = useState<Compare>(Compare.EQUAL);
   const [child, setChild] = useState<string>("");
   const [column, setColumn] = useState<string>("");
-  const [value, setValue] = useState<string>("");
+  const [as, setAs] = useState<string>("");
+  const [selection, setSelection] = useState<{ name: string; as: string }[]>(
+    []
+  );
 
   useEffect(() => {
     const parentlessNodes = graph.nodes.filter(
@@ -33,8 +36,8 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
     }
   }, []);
 
-  if (props.nodetype != NodeType.FILTER) {
-    console.log(props.nodetype, NodeType.FILTER);
+  if (props.nodetype != NodeType.SELECT) {
+    console.log(props.nodetype, NodeType.SELECT);
     return null;
   }
 
@@ -49,12 +52,11 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
       alert("Graph already has a root");
       return;
     }
-    const childNode = graph.nodes.find((node: GraphNode) => {
-      return node.id == Number(child);
-    });
+    const childNode = graph.nodes.find(
+      (node: GraphNode) => node.id == Number(child)
+    );
     if (childNode == undefined || childNode.hasParent) {
-      setChild("");
-      alert("Child node is not valid: " + child + " " + child.length);
+      alert("Child node is not valid");
       return;
     }
 
@@ -63,7 +65,7 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
 
     // add root node
     try {
-      newGraph.addFilterNode(Number(child), column, compare, value);
+      newGraph.addSelectNode(Number(child), selection);
     } catch (e) {
       alert(e);
       return;
@@ -71,35 +73,10 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
 
     newGraph.clientRefresh();
     setGraph(newGraph);
-    setChild("");
   };
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col">
-      <label htmlFor="compare" className="m-1">
-        Join Type
-      </label>
-      <select
-        name="compare"
-        id="compare"
-        value={compare}
-        onChange={(e) => {
-          setCompare(e.target.value as unknown as Compare);
-        }}
-        className="border rounded-sm m-3"
-      >
-        {Object.keys(Compare)
-          .filter((item) => {
-            return isNaN(Number(item));
-          })
-          .map((key) => {
-            return (
-              <option value={Compare[key as keyof typeof Compare]}>
-                {key}
-              </option>
-            );
-          })}
-      </select>
       <label htmlFor="child" className="m-1">
         Child
       </label>
@@ -126,7 +103,7 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
       </select>
 
       <label htmlFor="column" className="m-1">
-        Filter Column
+        Column
       </label>
       <select
         name="column"
@@ -147,25 +124,49 @@ export function FilterNodeForm(props: { nodetype: NodeType }) {
             );
           })}
       </select>
-      <label htmlFor="value" className="m-1">
-        Value
+
+      <label htmlFor="as" className="m-1">
+        Alias
       </label>
       <input
         type="text"
-        name="value"
-        id="value"
-        value={value}
+        name="as"
+        id="as"
+        value={as}
         onChange={(e) => {
-          setValue(e.target.value);
+          setAs(e.target.value);
         }}
         className="border rounded-sm m-3"
       />
+
+      <div className="flex flex-col  m-4 p-2 border">
+        <div className="flex flex-row justify-evenly border">
+          <div>Column Name</div>
+          <div>Alias</div>
+        </div>
+        {selection.map(({ name, as }) => (
+          <div key={name} className="flex flex-row justify-evenly">
+            <div>{name}</div>
+            <div>{as}</div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => {
+          setSelection([...selection, { name: column, as }]);
+        }}
+        className=" bg-slate-500 rounded-sm m-4 p-2 font-medium text-slate-200"
+      >
+        Add Node
+      </button>
 
       <button
         type="submit"
         className=" bg-slate-500 rounded-sm m-4 p-2 font-medium text-slate-200"
       >
-        Add
+        Add Node
       </button>
     </form>
   );
