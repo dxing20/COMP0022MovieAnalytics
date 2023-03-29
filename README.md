@@ -1,13 +1,11 @@
 # COMP0022MovieAnalytics
 
-## Common Issues
+## Installation
 
-### Nginx 404 or comp0022.dev cannot be reached dns cannot be resolved
-
-if you ran `skaffold dev` for development but cannot find the website at comp0022.dev on your local browser (which for no reason you should see), go to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts` and add the line `127.0.0.1 comp0022.dev` to the end of the file. This redirects comp0022.dev to your local machine.
-
-### Invalid certificate
-
-In chrome, go to settings, search for manage device certificate, and add env/ssl/rootCA.srt to trusted root certificates. We self signed our certificate.
-
-### Make sure you have env folder setup
+1. Clone both the common repository and this into a working directory. 
+2. Install skaffold
+3. Unzip the env folder to the same directory of this readme file.
+4. Run all the kubernetes secrets in the env folder.
+5. Go to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts` and add the line `127.0.0.1 comp0022.dev` to the end of the file. This redirects comp0022.dev to your local machine.
+6. In your browser, add the rootCA.srt as trusted root certificates from the env folder
+7. Run `skaffold dev`, this might take a long time. If nginx fails during initial deployment, simply rerun the `skaffold dev`. This is caused by the deployment order of the initial build. 
