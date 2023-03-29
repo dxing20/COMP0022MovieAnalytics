@@ -28,7 +28,7 @@ function SideNav({
             <GrDatabase size="33" style={{ padding: "3%" }}></GrDatabase>
           </div>
         </Link>
-        <Link href="/analysis">
+        <Link href="/correlation">
           <div className="pl-1  w-10 h-10 bg-[#394450] rounded-md mt-3 cursor-pointer text-center flex justify-center flex-col">
             <IoAnalyticsSharp
               size="33"
